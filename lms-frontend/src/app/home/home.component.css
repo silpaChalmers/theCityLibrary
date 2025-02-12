@@ -1,4 +1,13 @@
 .home {
-    margin-top: 200px;
+    margin-top: 90px;
     font-size: 80px;
+}
+.container {
+    position: relative;
+    min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
+    background-image: url('./m.png'); /* Replace with the actual path to your image */
+    background-size: cover; /* Cover the entire container */
+    background-position: center; /* Center the background image */
+    color: white; /* Optional: change text color to improve visibility */
+    text-align: center; /* Center the text */
 }
