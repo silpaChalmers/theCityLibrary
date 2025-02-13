@@ -1,10 +1,10 @@
 .home {
-    margin-top: 90px;
+    margin-top: 40px;
     font-size: 80px;
 }
 .container {
     position: relative;
-    min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
+    min-height: 88vh; /* Ensure the container takes at least the full height of the viewport */
     background-image: url('./m.png'); /* Replace with the actual path to your image */
     background-size: cover; /* Cover the entire container */
     background-position: center; /* Center the background image */

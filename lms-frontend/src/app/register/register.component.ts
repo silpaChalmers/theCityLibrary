@@ -19,11 +19,18 @@ export class RegisterComponent implements OnInit {
   }
 
   saveUser() {
-    this.usersService.registerUser(this.user).subscribe(data => {
-      console.log(data);
-    },
-    error => console.log(error));
-  }
+      this.usersService.registerUser(this.user).subscribe({
+        next: (data) => {
+          console.log(data);
+          alert('Registration successful! Please log in using your new account.');
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Registration failed. Please try again later.');
+        }
+      });
+    }
 
   onSubmit() {
     console.log(this.user);
