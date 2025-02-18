@@ -1,0 +1,12 @@
+import { FormsModule } from '@angular/forms';
+import { FilterBooksPipe } from './filter-books.pipe';
+
+@NgModule({
+  declarations: [
+    FilterBooksPipe
+  ],
+  imports: [
+    FormsModule
+  ]
+})
+export class AppModule { }
