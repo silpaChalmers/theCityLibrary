@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Books } from '../_model/books'
+import { Books } from '../_model/books';
 import { BooksService } from '../_service/books.service';
 
 @Component({
@@ -10,7 +10,8 @@ import { BooksService } from '../_service/books.service';
 })
 export class BooksListComponent implements OnInit {
 
-  books: Books[];
+  books: Books[] = [];
+  searchTerm: string = '';
 
   constructor(private booksService: BooksService,
     private router: Router) { }
@@ -39,4 +40,11 @@ export class BooksListComponent implements OnInit {
     this.router.navigate(['book-details', bookId ]);
   }
 
+  get filteredBooks() {
+    return this.books.filter(book =>
+      (book.bookName.toLowerCase().includes(this.searchTerm.toLowerCase())
+      || book.bookGenre.toLowerCase().includes(this.searchTerm.toLowerCase())
+      || book.bookAuthor.toLowerCase().includes(this.searchTerm.toLowerCase()))
+    );
+  }
 }

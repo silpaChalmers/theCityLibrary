@@ -50,7 +50,8 @@ import { RegisterComponent } from './register/register.component'
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   providers: [
     AuthGuard,
