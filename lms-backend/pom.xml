@@ -14,7 +14,7 @@
 	<name>lms</name>
 	<description>Library Management System</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -62,10 +62,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -83,10 +85,47 @@
 				</configuration>
 			</plugin>
 			<plugin>
-			    <groupId>org.pitest</groupId>
+				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
-				<version>1.15.0</version>
+				<version>1.18.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>1.2.2</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<outputFormats>
+						<param>HTML</param>
+					</outputFormats>
+					<plugins>
+						<plugin>org.pitest.plugins.junit5.JUnit5TestPlugin</plugin>
+					</plugins>
+					<jvmArgs>
+                     <!-- 打开核心包给子进程反射使用 -->
+						<jvmArg>--add-opens</jvmArg>
+						<jvmArg>java.base/java.lang=ALL-UNNAMED</jvmArg>
+
+						<jvmArg>--add-opens</jvmArg>
+						<jvmArg>java.base/java.lang.invoke=ALL-UNNAMED</jvmArg>
+
+						<jvmArg>--add-opens</jvmArg>
+						<jvmArg>java.base/java.util=ALL-UNNAMED</jvmArg>
+
+						<jvmArg>--add-opens</jvmArg>
+						<jvmArg>java.base/java.io=ALL-UNNAMED</jvmArg>
+
+						<jvmArg>--add-opens</jvmArg>
+						<jvmArg>java.base/java.net=ALL-UNNAMED</jvmArg>
+
+						<jvmArg>--add-opens</jvmArg>
+						<jvmArg>java.base/sun.nio.ch=ALL-UNNAMED</jvmArg>
+					</jvmArgs>
+				</configuration>
 			</plugin>
+
+
 		</plugins>
 	</build>
 	<repositories>

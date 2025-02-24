@@ -1,41 +1,29 @@
 package com.ibizabroker.lms.controller;
 
-import com.ibizabroker.lms.configuration.JwtAuthenticationEntryPoint;
-import com.ibizabroker.lms.configuration.JwtRequestFilter;
-import com.ibizabroker.lms.configuration.WebSecurityConfiguration;
+import com.ibizabroker.lms.entity.JwtRequest;
 import com.ibizabroker.lms.entity.JwtResponse;
 import com.ibizabroker.lms.entity.Users;
 import com.ibizabroker.lms.service.JwtService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(
-    controllers = JwtController.class,
-    excludeFilters = {
-        @ComponentScan.Filter(
-            type = FilterType.ASSIGNABLE_TYPE,
-            classes = {
-                WebSecurityConfiguration.class,
-                JwtRequestFilter.class,
-                JwtAuthenticationEntryPoint.class
-            }
-        )
-    }
-)
+/**
+ * 使用 @SpringBootTest + @AutoConfigureMockMvc 测试 JwtController
+ */
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class JwtControllerTest {
 
@@ -50,20 +38,31 @@ class JwtControllerTest {
      */
     @Test
     void testCreateJwtToken_Success() throws Exception {
+        // 构造请求 JSON
         String requestJson = "{\"username\":\"testUser\",\"password\":\"testPassword\"}";
 
+        // 模拟 Service 返回的结果
         Users mockUser = new Users();
         mockUser.setUsername("testUser");
         JwtResponse mockResponse = new JwtResponse(mockUser, "fakeJwtToken");
 
         when(jwtService.createJwtToken(any())).thenReturn(mockResponse);
 
+        // 执行 POST /authenticate
         mockMvc.perform(post("/authenticate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.user.username").value("testUser"))
                 .andExpect(jsonPath("$.jwtToken").value("fakeJwtToken"));
+
+        // 验证 Controller 确实调用了 jwtService.createJwtToken(...)，并捕获传入的 JwtRequest
+        ArgumentCaptor<JwtRequest> captor = ArgumentCaptor.forClass(JwtRequest.class);
+        verify(jwtService, times(1)).createJwtToken(captor.capture());
+
+        JwtRequest capturedRequest = captor.getValue();
+        assertEquals("testUser", capturedRequest.getUsername());
+        assertEquals("testPassword", capturedRequest.getPassword());
     }
 
     /**
@@ -74,27 +73,21 @@ class JwtControllerTest {
     void testCreateJwtToken_InvalidCredentials() throws Exception {
         String requestJson = "{\"username\":\"badUser\",\"password\":\"badPassword\"}";
 
+        // 当 jwtService.createJwtToken 被调用时抛出异常
         when(jwtService.createJwtToken(any()))
                 .thenThrow(new RuntimeException("INVALID_CREDENTIALS"));
 
         // 用 assertThrows 捕获抛出的 NestedServletException
         NestedServletException ex = assertThrows(NestedServletException.class, () -> {
-            // 这里的 perform 会抛异常
             mockMvc.perform(post("/authenticate")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestJson))
-                    // 不要再 andExpect(status().isInternalServerError())
-                    // 因为请求不会到达返回 HTTP 响应那一步
                     .andReturn();
         });
 
-        // 验证内部 cause 是 RuntimeException
-        Throwable cause = ex.getCause();
-        if (cause == null) {
-            cause = ex; // 万一没有内层 cause，直接用 ex
-        }
-        // 断言类型和消息
-        org.junit.jupiter.api.Assertions.assertTrue(cause instanceof RuntimeException);
-        org.junit.jupiter.api.Assertions.assertEquals("INVALID_CREDENTIALS", cause.getMessage());
+        // 验证内部 cause 是 RuntimeException 且消息正确
+        Throwable cause = ex.getCause() == null ? ex : ex.getCause();
+        assertTrue(cause instanceof RuntimeException);
+        assertEquals("INVALID_CREDENTIALS", cause.getMessage());
     }
 }
