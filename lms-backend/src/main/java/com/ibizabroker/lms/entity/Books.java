@@ -18,6 +18,9 @@ public class Books {
     Integer noOfCopies;
 
     public void borrowBook() {
+        if (this.noOfCopies <= 0) {
+            throw new IllegalStateException("No copies left to borrow.");
+        }
         this.noOfCopies--;
     }
 
