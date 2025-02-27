@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 @RestController
 @RequestMapping("/borrow")
-public class BorrowController{} /*{
+public class BorrowController {
 
     @Autowired
     private BorrowRepository borrowRepository;
@@ -51,7 +51,7 @@ public class BorrowController{} /*{
         borrowRepository.save(borrow);
         return user.getName() + " has borrowed one copy of \"" + book.getBookName() + "\"!";
     }
-*//*
+
     @GetMapping
     public List<Borrow> getAllBorrow() {
         return borrowRepository.findAll();
@@ -180,5 +180,5 @@ public class BorrowController{} /*{
 //        user.getBooks().add(book);
 //        usersRepository.save(user);
 //    }
-*//*
-}*/
+
+}

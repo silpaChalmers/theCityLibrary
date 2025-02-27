@@ -13,6 +13,7 @@ import { UserAuthService } from '../_service/user-auth.service';
 export class BorrowBookComponent implements OnInit {
 
   books: Books[];
+  searchTerm1: string = '';
 
   constructor(
     private booksService: BooksService,
@@ -43,5 +44,12 @@ export class BorrowBookComponent implements OnInit {
     },
     error => console.log(error));
     window.location.reload();
+  }
+get filteredBooks() {
+    return this.books.filter(book =>
+      (book.bookName.toLowerCase().includes(this.searchTerm1.toLowerCase())
+      || book.bookGenre.toLowerCase().includes(this.searchTerm1.toLowerCase())
+      || book.bookAuthor.toLowerCase().includes(this.searchTerm1.toLowerCase()))
+    );
   }
 }
