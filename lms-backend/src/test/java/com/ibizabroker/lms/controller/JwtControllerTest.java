@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
@@ -32,6 +33,10 @@ class JwtControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    // 如果要从容器里获取 CorsConfiguration / WebSecurityConfiguration，需要注入 ApplicationContext
+    @Autowired
+    private ApplicationContext context;
 
     /**
      * 测试：成功生成 JWT
@@ -89,5 +94,36 @@ class JwtControllerTest {
         Throwable cause = ex.getCause() == null ? ex : ex.getCause();
         assertTrue(cause instanceof RuntimeException);
         assertEquals("INVALID_CREDENTIALS", cause.getMessage());
+    }
+
+    // ========================= 新增以下两个测试方法 =========================
+
+    /**
+     * 1. 测试 CorsConfiguration::corsConfigurer() 不为 null
+     *    用于杀死“将返回值替换为 null”的存活变异。
+     */
+    @Test
+    void testCorsConfigurerBeanNotNull() {
+        // 假设你的 CorsConfiguration 类在容器里
+        com.ibizabroker.lms.configuration.CorsConfiguration corsConfiguration
+                = context.getBean(com.ibizabroker.lms.configuration.CorsConfiguration.class);
+
+        assertNotNull(corsConfiguration.corsConfigurer(),
+                "corsConfigurer() 应该返回非 null 的 WebMvcConfigurer");
+    }
+
+    /**
+     * 2. 测试 WebSecurityConfiguration::authenticationManagerBean() 不为 null
+     *    用于杀死“将返回值替换为 null”的存活变异。
+     *    注意：如果 WebSecurityConfiguration 不在容器里，需要相应修改获取方式
+     */
+    @Test
+    void testAuthenticationManagerBeanNotNull() throws Exception {
+        // 假设你的 WebSecurityConfiguration 类在容器里
+        com.ibizabroker.lms.configuration.WebSecurityConfiguration webSecurityConfiguration
+                = context.getBean(com.ibizabroker.lms.configuration.WebSecurityConfiguration.class);
+
+        assertNotNull(webSecurityConfiguration.authenticationManagerBean(),
+                "authenticationManagerBean() 应该返回非 null 的 AuthenticationManager");
     }
 }

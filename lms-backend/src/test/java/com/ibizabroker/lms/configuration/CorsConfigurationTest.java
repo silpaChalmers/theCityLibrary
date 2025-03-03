@@ -1,13 +1,11 @@
 package com.ibizabroker.lms.configuration;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,7 +29,7 @@ class CorsConfigurationTest {
     private CorsConfiguration corsConfiguration;
 
     /**
-     * 1. 测试跨域预检请求 (OPTIONS) 是否返回预期的 CORS 响应头
+     * 测试跨域预检请求 (OPTIONS) 是否返回预期的 CORS 响应头
      */
     @Test
     void testCorsConfigurationOptions() throws Exception {
@@ -48,6 +46,14 @@ class CorsConfigurationTest {
                 .andExpect(header().string("Access-Control-Allow-Credentials", "true"))
                 .andExpect(header().string("Access-Control-Allow-Headers", "Content-Type"));
     }
-
-   
+    
+    /**
+     * 新增测试：验证 corsConfigurer() 方法返回的 WebMvcConfigurer 对象不为 null，
+     * 以便捕捉如果方法被修改为返回 null 的情况。
+     */
+    @Test
+    void testCorsConfigurerNotNull() {
+        WebMvcConfigurer webMvcConfigurer = corsConfiguration.corsConfigurer();
+        assertNotNull(webMvcConfigurer, "corsConfigurer() 应返回非 null 的 WebMvcConfigurer 实例");
+    }
 }

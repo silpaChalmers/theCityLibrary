@@ -110,7 +110,6 @@
 						<plugin>org.pitest.plugins.junit5.JUnit5TestPlugin</plugin>
 					</plugins>
 					<jvmArgs>
-                     <!-- 打开核心包给子进程反射使用 -->
 						<jvmArg>--add-opens</jvmArg>
 						<jvmArg>java.base/java.lang=ALL-UNNAMED</jvmArg>
 
@@ -129,6 +128,9 @@
 						<jvmArg>--add-opens</jvmArg>
 						<jvmArg>java.base/sun.nio.ch=ALL-UNNAMED</jvmArg>
 					</jvmArgs>
+					<excludedAnnotations>
+					    <param>lombok.Generated</param>
+					</excludedAnnotations>
 				</configuration>
 			</plugin>
 

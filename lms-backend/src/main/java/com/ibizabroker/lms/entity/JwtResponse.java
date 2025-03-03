@@ -5,6 +5,9 @@ public class JwtResponse {
     private Users user;
     private String jwtToken;
 
+    public JwtResponse() {
+    }
+    
     public JwtResponse(Users user, String jwtToken) {
         this.user = user;
         this.jwtToken = jwtToken;
