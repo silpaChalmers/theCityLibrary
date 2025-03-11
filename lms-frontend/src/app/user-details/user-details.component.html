@@ -3,6 +3,7 @@
     <thead>
         <tr>
             <th> Book ID </th>
+          <th> Book Name </th>
             <th> Issue Date </th>
             <th> Return Date </th>
         </tr>
@@ -10,7 +11,8 @@
     <tbody>
         <tr *ngFor="let borrower of borrow">
             <td> {{ borrower.bookId }} </td>
-            <td> {{ borrower.issueDate }} </td>
+          <td> {{ borrower.book?.bookName }} </td> <!-- Updated this line -->
+          <td> {{ borrower.issueDate }} </td>
             <div *ngIf="borrower.returnDate != null">
                 <td> {{ borrower.returnDate }} </td>
             </div>

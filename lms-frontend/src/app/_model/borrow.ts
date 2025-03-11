@@ -1,3 +1,5 @@
+import { Books } from './books'
+
 export class Borrow {
     borrowId: number;
     bookId: number;
@@ -5,4 +7,5 @@ export class Borrow {
     issueDate: Date;
     returnDate: Date;
     dueDate: Date;
+    book?: Books;
 }
