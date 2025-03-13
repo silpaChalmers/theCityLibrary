@@ -1,0 +1,15 @@
+.home {
+    margin-top: 120px;
+    font-size: 80px;
+}
+.container {
+    position: absolute;
+    min-height: 90vh;
+    background-image: url('m.jpg'); /* Ensure the correct path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; /* Ensure no repetition */
+    color: white;
+    text-align: center;
+}
+

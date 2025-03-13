@@ -1,0 +1,56 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" style="color: rgb(241, 223, 223);" href="#">Online Library📚 </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+          <li class="nav-item">
+            <a routerLink="/books" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">Book List</a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/create-book" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">Add Book</a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/users" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">User List</a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/register-user" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['Admin'])">Register User</a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/borrow-book" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['User'])">Borrow Books</a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/return-book" routerLinkActive="active" class="nav-link" *ngIf="userService.roleMatch(['User'])">Return Books</a>
+          </li>
+
+          <li class="nav-item right-text" *ngIf="isLoggedIn()">
+            <div class="nav-link disabled text-right">
+              <strong>
+                Hey {{name}}
+              </strong>
+            </div>
+          </li>
+
+        </ul>
+        <button *ngIf="!isLoggedIn()" type="button" class="btn btn-success"
+                routerLink="/login" [ngStyle]="{'margin-right': '10px'}">
+          Login
+        </button>
+        <button *ngIf="!isLoggedIn()" type="button" class="btn btn-success" routerLink="/register">
+          Register
+        </button>
+        <button *ngIf="isLoggedIn()" type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+
+      </div>
+    </div>
+  </nav>
+</header>
